@@ -1,0 +1,128 @@
+/* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+  }
+  
+  .filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  #search-bar, #genre-filter {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 48%;
+  }
+  
+  #book-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .book-item {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .book-cover {
+    width: 80px;
+    height: 120px;
+    margin-right: 15px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  .book-details {
+    flex: 1;
+  }
+  
+  .wishlist-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .skeleton {
+    animation: skeleton-loading 1s infinite linear;
+  }
+  
+  .skeleton-img {
+    width: 80px;
+    height: 120px;
+    background: #ccc;
+    margin-right: 15px;
+  }
+  
+  .skeleton-text {
+    width: 100%;
+    height: 20px;
+    background: #ddd;
+    margin-bottom: 10px;
+  }
+  
+  .skeleton-text.short {
+    width: 60%;
+  }
+  
+  @keyframes skeleton-loading {
+    0% {
+      background-color: #eee;
+    }
+    50% {
+      background-color: #ddd;
+    }
+    100% {
+      background-color: #eee;
+    }
+  }
+  
+  #pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #aaa;
+  }
