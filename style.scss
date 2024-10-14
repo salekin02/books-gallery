@@ -1,128 +1,153 @@
-/* styles.css */
+$primary-color: #3e3e3e;
+$secondary-color: #f7f7f7;
+$accent-color: #ff6347;
+
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f0f4f8;
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: $secondary-color;
+    color: $primary-color;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 28px;
+    text-align: center;
+    color: $primary-color;
 }
 
-.filters {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    #search-bar,
+    #genre-filter {
+        padding: 8px;
+        border: 1px solid $primary-color;
+        border-radius: 4px;
+    }
 }
 
-#search-bar, #genre-filter {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  width: 48%;
+.book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
 }
 
-#book-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
+.book-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+
+    .cover {
+        width: 100px;
+        height: 150px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 4px;
+    }
+
+    .info {
+        margin-top: 10px;
+        text-align: center;
+
+        .title {
+            font-weight: bold;
+            font-size: 1em;
+            color: $primary-color;
+            margin-bottom: 5px;
+        }
+
+        .author {
+            font-size: 0.9em;
+            color: #777;
+        }
+    }
+
+    .wishlist-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        color: $accent-color;
+        font-size: 1.2em;
+    }
 }
 
-.book-item {
-  display: flex;
-  align-items: center;
-  background: #f9f9f9;
-  padding: 15px;
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+
+    button {
+        padding: 8px 12px;
+        border: none;
+        background-color: $primary-color;
+        color: white;
+        cursor: pointer;
+        border-radius: 4px;
+
+        &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    }
+}
+
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.skeleton-card {
+  background-color: #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.book-cover {
-  width: 80px;
-  height: 120px;
-  margin-right: 15px;
-  object-fit: cover;
-  border-radius: 5px;
-}
-
-.book-details {
-  flex: 1;
-}
-
-.wishlist-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.skeleton {
-  animation: skeleton-loading 1s infinite linear;
-}
-
-.skeleton-img {
-  width: 80px;
-  height: 120px;
-  background: #ccc;
-  margin-right: 15px;
-}
-
-.skeleton-text {
-  width: 100%;
-  height: 20px;
-  background: #ddd;
-  margin-bottom: 10px;
-}
-
-.skeleton-text.short {
-  width: 60%;
-}
-
-@keyframes skeleton-loading {
-  0% {
-    background-color: #eee;
-  }
-  50% {
-    background-color: #ddd;
-  }
-  100% {
-    background-color: #eee;
-  }
-}
-
-#pagination {
+  padding: 10px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-top: 20px;
-}
+  position: relative;
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f7f7f7 50%, #e0e0e0 75%);
+  background-size: 400px 100%;
 
-button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+  .skeleton-cover {
+      width: 100px;
+      height: 150px;
+      background-color: #ccc;
+      border-radius: 4px;
+  }
 
-button:disabled {
-  background-color: #aaa;
+  .skeleton-text {
+      width: 80%;
+      height: 16px;
+      margin-top: 10px;
+      background-color: #ccc;
+      border-radius: 4px;
+
+      &.title {
+          width: 60%;
+          height: 20px;
+      }
+
+      &.author {
+          width: 40%;
+          height: 14px;
+          margin-top: 5px;
+      }
+  }
 }

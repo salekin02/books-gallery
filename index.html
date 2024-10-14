@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book List</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gutenberg Books</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Book Explorer</h1>
-    
-    <div class="filters">
-      <input type="text" id="search-bar" placeholder="Search by title..." />
-      <select id="genre-filter">
-        <option value="">All Genres</option>
-      </select>
+    <div class="container">
+        <h1>Gutenberg Books</h1>
+        <div class="controls">
+            <input type="text" id="search-bar" placeholder="Search by title...">
+            <select id="genre-filter">
+                <option value="">All Genres</option>
+                <!-- Genre options will be dynamically populated -->
+            </select>
+        </div>
+        <div id="book-list" class="book-list"></div>
+        <div id="pagination" class="pagination">
+            <button id="prev-page">Previous</button>
+            <div id="page-numbers"></div>
+            <button id="next-page">Next</button>
+        </div>
     </div>
-
-    <div id="book-list" class="book-list"></div>
-
-    <div id="pagination">
-      <button id="prev-btn" disabled>Previous</button>
-      <span id="page-info"></span>
-      <button id="next-btn">Next</button>
-    </div>
-  </div>
-
-  <script src="main.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

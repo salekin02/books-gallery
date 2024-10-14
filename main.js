@@ -1,145 +1,119 @@
-// app.js
+const API_URL = 'https://gutendex.com/books/';
+const ITEMS_PER_PAGE = 10;
 let books = [];
-let filteredBooks = [];
+let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 let currentPage = 1;
-const itemsPerPage = 10;
+let currentGenre = '';
+let currentSearch = '';
 
-const bookList = document.getElementById('book-list');
-const searchBar = document.getElementById('search-bar');
-const genreFilter = document.getElementById('genre-filter');
-const pageInfo = document.getElementById('page-info');
-const prevBtn = document.getElementById('prev-btn');
-const nextBtn = document.getElementById('next-btn');
+document.addEventListener('DOMContentLoaded', () => {
+    fetchBooks();
+    loadGenres();
+    setupEventListeners();
+});
 
-// Function to show skeleton loader
-const showSkeletonLoader = () => {
-  bookList.innerHTML = '';
-  for (let i = 0; i < itemsPerPage; i++) {
-    const skeleton = document.createElement('div');
-    skeleton.classList.add('book-item', 'skeleton');
-    skeleton.innerHTML = `
-      <div class="skeleton-img"></div>
-      <div class="skeleton-text"></div>
-      <div class="skeleton-text short"></div>
-    `;
-    bookList.appendChild(skeleton);
-  }
-};
+async function fetchBooks() {
+  showSkeletons();
+  const response = await fetch(API_URL);
+  const data = await response.json();
+  books = data.results;
+  renderBooks();
+  renderPagination();
+}
 
-// Function to fetch books
-const fetchBooks = async (page = 1) => {
-  showSkeletonLoader();
-  try {
-    const response = await fetch(`https://gutendex.com/books/?page=${page}`);
-    const data = await response.json();
-    books = data.results;
-    filteredBooks = books;
-    displayBooks();
-    displayPagination(data);
-    populateGenres();
-  } catch (error) {
-    console.error('Error fetching books:', error);
-  }
-};
-
-// Function to display books
-const displayBooks = () => {
-  bookList.innerHTML = '';
-  const paginatedBooks = filteredBooks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  paginatedBooks.forEach((book) => {
-    const bookItem = document.createElement('div');
-    bookItem.classList.add('book-item');
-    bookItem.innerHTML = `
-      <img src="${book.formats['image/jpeg']}" alt="${book.title}" class="book-cover">
-      <div class="book-details">
-        <h3>${book.title}</h3>
-        <p>Author: ${book.authors.map(author => author.name).join(', ')}</p>
-        <p>Genre: ${book.subjects.join(', ')}</p>
+function showSkeletons() {
+  const skeletonCards = Array.from({ length: ITEMS_PER_PAGE }).map(() => `
+      <div class="skeleton-card">
+          <div class="skeleton-cover"></div>
+          <div class="skeleton-text title"></div>
+          <div class="skeleton-text author"></div>
       </div>
-      <button class="wishlist-btn" data-id="${book.id}">♡</button>
-    `;
-    bookList.appendChild(bookItem);
-  });
-  updateWishlistIcons();
-};
+  `).join('');
+  document.getElementById('book-list').innerHTML = skeletonCards;
+}
 
-// Function to display pagination
-const displayPagination = (data) => {
-  pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(data.count / itemsPerPage)}`;
-  prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = currentPage === Math.ceil(data.count / itemsPerPage);
-};
 
-// Populate genre dropdown
-const populateGenres = () => {
-  const allGenres = [...new Set(books.flatMap(book => book.subjects))];
-  genreFilter.innerHTML = '<option value="">All Genres</option>'; // Reset options
-  allGenres.forEach(genre => {
-    const option = document.createElement('option');
-    option.value = genre;
-    option.textContent = genre;
-    genreFilter.appendChild(option);
-  });
-};
+function loadGenres() {
+    const genres = [...new Set(books.flatMap(book => book.subjects))];
+    const genreFilter = document.getElementById('genre-filter');
+    genres.forEach(genre => {
+        const option = document.createElement('option');
+        option.value = genre;
+        option.textContent = genre;
+        genreFilter.appendChild(option);
+    });
+}
 
-// Search by title
-searchBar.addEventListener('input', (e) => {
-  const searchValue = e.target.value.toLowerCase();
-  filteredBooks = books.filter(book => book.title.toLowerCase().includes(searchValue));
-  displayBooks();
-});
+function setupEventListeners() {
+    document.getElementById('search-bar').addEventListener('input', event => {
+        currentSearch = event.target.value.toLowerCase();
+        currentPage = 1;
+        renderBooks();
+    });
 
-// Filter by genre
-genreFilter.addEventListener('change', (e) => {
-  const genreValue = e.target.value;
-  if (genreValue === '') {
-    filteredBooks = books;
-  } else {
-    filteredBooks = books.filter(book => book.subjects.includes(genreValue));
-  }
-  displayBooks();
-});
+    document.getElementById('genre-filter').addEventListener('change', event => {
+        currentGenre = event.target.value;
+        currentPage = 1;
+        renderBooks();
+    });
 
-// Wishlist functionality
-const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    document.getElementById('prev-page').addEventListener('click', () => {
+        if (currentPage > 1) currentPage--;
+        renderBooks();
+    });
 
-bookList.addEventListener('click', (e) => {
-  if (e.target.classList.contains('wishlist-btn')) {
-    const bookId = e.target.dataset.id;
+    document.getElementById('next-page').addEventListener('click', () => {
+        currentPage++;
+        renderBooks();
+    });
+}
+
+function renderBooks() {
+    const filteredBooks = books
+        .filter(book => book.title.toLowerCase().includes(currentSearch))
+        .filter(book => !currentGenre || book.subjects.includes(currentGenre));
+
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedBooks = filteredBooks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    document.getElementById('book-list').innerHTML = paginatedBooks.map(book => `
+        <div class="book-card">
+            <div class="cover" style="background-image: url(${book.formats['image/jpeg']})"></div>
+            <div class="info">
+                <p class="title">${book.title}</p>
+                <p class="author">${book.authors.map(author => author.name).join(', ')}</p>
+            </div>
+            <button class="wishlist-btn" onclick="toggleWishlist(${book.id})">
+                ${wishlist.includes(book.id) ? '❤️' : '🤍'}
+            </button>
+        </div>
+    `).join('');
+
+    renderPagination();
+}
+
+function renderPagination() {
+    const pageNumbers = document.getElementById('page-numbers');
+    const totalPages = Math.ceil(books.length / ITEMS_PER_PAGE);
+    pageNumbers.innerHTML = Array.from({ length: totalPages }, (_, i) => `
+        <button ${i + 1 === currentPage ? 'class="active"' : ''} onclick="changePage(${i + 1})">${i + 1}</button>
+    `).join('');
+
+    document.getElementById('prev-page').disabled = currentPage === 1;
+    document.getElementById('next-page').disabled = currentPage === totalPages;
+}
+
+function changePage(page) {
+    currentPage = page;
+    renderBooks();
+}
+
+function toggleWishlist(bookId) {
     if (wishlist.includes(bookId)) {
-      wishlist.splice(wishlist.indexOf(bookId), 1);
-      e.target.textContent = '♡';
+        wishlist = wishlist.filter(id => id !== bookId);
     } else {
-      wishlist.push(bookId);
-      e.target.textContent = '♥';
+        wishlist.push(bookId);
     }
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
-  }
-});
-
-const updateWishlistIcons = () => {
-  const wishlistBtns = document.querySelectorAll('.wishlist-btn');
-  wishlistBtns.forEach(btn => {
-    if (wishlist.includes(btn.dataset.id)) {
-      btn.textContent = '♥';
-    } else {
-      btn.textContent = '♡';
-    }
-  });
-};
-
-// Pagination buttons
-prevBtn.addEventListener('click', () => {
-  if (currentPage > 1) {
-    currentPage--;
-    fetchBooks(currentPage);
-  }
-});
-
-nextBtn.addEventListener('click', () => {
-  currentPage++;
-  fetchBooks(currentPage);
-});
-
-// Initial fetch
-fetchBooks();
+    renderBooks();
+}
