@@ -1,28 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gutenberg Books</title>
+    <title>Gutendex Book List</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Gutenberg Books</h1>
-        <div class="controls">
+        <h1>Gutendex Book Explorer</h1>
+
+        <div class="filters">
             <input type="text" id="search-bar" placeholder="Search by title...">
             <select id="genre-filter">
                 <option value="">All Genres</option>
-                <!-- Genre options will be dynamically populated -->
-            </select>
+                </select>
         </div>
-        <div id="book-list" class="book-list"></div>
-        <div id="pagination" class="pagination">
-            <button id="prev-page">Previous</button>
-            <div id="page-numbers"></div>
+
+        <div id="loading">
+            <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        </div>
+
+        <div id="book-list">
+            </div>
+
+        <div class="pagination">
+            <button id="prev-page" disabled>Previous</button>
             <button id="next-page">Next</button>
         </div>
     </div>
+
     <script src="main.js"></script>
 </body>
 </html>
