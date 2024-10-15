@@ -1,33 +1,56 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Gutendex Book List</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav>
+      <div>
+        <!-- Checkbox for toggling menu -->
+        <input type="checkbox" id="check" />
+        <!-- Menu icon -->
+        <label for="check" class="checkbtn">
+          <i class="fas fa-bars"></i>
+        </label>
+        <!-- Site logo -->
+        <label class="logo">Book Explorer</label>
+        <!-- Navigation links -->
+      </div>
+      <ul>
+        <li><a class="active" href="#">Home</a></li>
+        <li><a href="#">Wishlist</a></li>
+      </ul>
+    </nav>
     <div class="container">
-        <h1>Gutendex Book Explorer</h1>
+      <div class="filters">
+        <input type="text" id="search-bar" placeholder="Search by title..." />
+        <select id="genre-filter">
+          <option value="">All Genres</option>
+        </select>
+      </div>
 
-        <div class="filters">
-            <input type="text" id="search-bar" placeholder="Search by title...">
-            <select id="genre-filter">
-                <option value="">All Genres</option>
-                </select>
+      <div id="loading">
+        <div class="lds-roller">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
         </div>
+      </div>
 
-        <div id="loading">
-            <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-        </div>
+      <div id="book-list"></div>
 
-        <div id="book-list">
-            </div>
-
-        <div class="pagination">
-            <button id="prev-page" disabled>Previous</button>
-            <button id="next-page">Next</button>
-        </div>
+      <div class="pagination">
+        <button id="prev-page" disabled>Previous</button>
+        <button id="next-page" disabled>Next</button>
+      </div>
     </div>
 
     <script src="main.js"></script>
-</body>
+  </body>
 </html>
