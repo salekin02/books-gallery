@@ -4,8 +4,8 @@ const searchBar = document.getElementById('search-bar');
 const genreFilter = document.getElementById('genre-filter');
 const prevPageButton = document.getElementById('prev-page');
 const nextPageButton = document.getElementById('next-page');
-const loadingIndicator = document.getElementById('loading');
-const baseUrl = 'https://gutendex.com/books/';
+const loadingIndicator = document.getElementById('loader');
+const baseUrl = 'books.json';
 let booksData = []; // Store fetched book data
 let currentPage = 1;
 const booksPerPage = 10;
@@ -16,7 +16,7 @@ fetchBooks();
 
 // Function to fetch books from the API
 async function fetchBooks(url = baseUrl) {
-    loadingIndicator.style.display = 'flex'; // Show loading animation
+    loadingIndicator.style.display = 'block'; // Show loading animation
     bookList.innerHTML = ''; // Clear previous results
     prevPageButton.disabled = true;
     nextPageButton.disabled = true;
@@ -58,9 +58,12 @@ function createBookCard(book) {
     img.alt = book.title;
     card.appendChild(img);
 
-    const title = document.createElement('h2');
+    const div = document.createElement('div');
+    const title = document.createElement('a'); // Make title a link
+    title.href = `book-details.html?id=${book.id}`; 
     title.textContent = book.title;
-    card.appendChild(title);
+    div.appendChild(title);
+    card.appendChild(div);
 
     const author = document.createElement('p');
     author.textContent = `by ${book.authors[0] ? book.authors[0].name : 'Unknown Author'}`;
@@ -78,7 +81,7 @@ function createBookCard(book) {
 
     const wishlistIcon = document.createElement('span');
     wishlistIcon.classList.add('wishlist-icon');
-    wishlistIcon.title = 'Add to Wishlist';
+    wishlistIcon.title = 'Add/Remove as wishlist';
     wishlistIcon.innerHTML = '&#x2661;'; // Heart symbol
     wishlistIcon.dataset.bookId = book.id; // Store book ID for wishlist
 
@@ -89,6 +92,8 @@ function createBookCard(book) {
 
     wishlistIcon.addEventListener('click', toggleWishlist);
     card.appendChild(wishlistIcon);
+
+    
 
     return card;
 }

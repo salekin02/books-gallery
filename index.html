@@ -3,23 +3,21 @@
   <head>
     <title>Gutendex Book List</title>
     <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
   </head>
   <body>
     <nav>
-      <div>
-        <!-- Checkbox for toggling menu -->
-        <input type="checkbox" id="check" />
-        <!-- Menu icon -->
-        <label for="check" class="checkbtn">
-          <i class="fas fa-bars"></i>
-        </label>
-        <!-- Site logo -->
-        <label class="logo">Book Explorer</label>
-        <!-- Navigation links -->
-      </div>
+      <input type="checkbox" id="check" />
+      <label for="check" class="checkbtn">
+        <i class="fas fa-bars"></i>
+      </label>
+      <label class="logo">Gutendex Books</label>
       <ul>
-        <li><a class="active" href="#">Home</a></li>
-        <li><a href="#">Wishlist</a></li>
+        <li><a class="active" href="/">Home</a></li>
+        <li><a href="/wishlist">Wishlist</a></li>
       </ul>
     </nav>
     <div class="container">
@@ -29,19 +27,7 @@
           <option value="">All Genres</option>
         </select>
       </div>
-
-      <div id="loading">
-        <div class="lds-roller">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
+      <div id="loader"></div>
 
       <div id="book-list"></div>
 
@@ -51,6 +37,7 @@
       </div>
     </div>
 
+    <script src="nav.js"></script>
     <script src="main.js"></script>
   </body>
 </html>

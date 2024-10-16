@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Wishlist</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <nav>
+      <input type="checkbox" id="check" />
+      <label for="check" class="checkbtn">
+        <i class="fas fa-bars"></i>
+      </label>
+      <label class="logo">Gutendex Books</label>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a class="active" href="/wishlist">Wishlist</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div id="loader"></div>
+      <div id="book-list"></div>
+      <p id="no-books" style="display: none">Your wishlist is empty.</p>
+    </div>
+    <script src="wishlist.js"></script>
+  </body>
+</html>
