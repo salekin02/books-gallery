@@ -13,12 +13,12 @@ function displayWishlist() {
 
     wishlistList.innerHTML = ''; // Clear previous list
 
-    loadingIndicator.style.display = 'block'; // Show loading animation
+    loadingIndicator.style.display = 'block';
     wishlist.forEach(bookId => {
         fetch(`https://gutendex.com/books/${bookId}`)
             .then(response => response.json())
             .then(book => {
-                loadingIndicator.style.display = 'none'; // Hide loading animation
+                loadingIndicator.style.display = 'none';
                 const bookCard = createBookCard(book);
                 wishlistList.appendChild(bookCard);
             })
@@ -38,7 +38,7 @@ function createBookCard(book) {
     card.appendChild(img);
 
     const div = document.createElement('div');
-    const title = document.createElement('a'); // Make title a link
+    const title = document.createElement('a');
     title.href = `${location.origin}/book/index.html?id=${book.id}`; 
     title.textContent = book.title;
     div.appendChild(title);
@@ -49,7 +49,6 @@ function createBookCard(book) {
     author.textContent = `by ${book.authors[0] ? book.authors[0].name : 'Unknown Author'}`;
     card.appendChild(author);
 
-    // Add genres (simplified - you might want to display multiple genres)
     const genre = document.createElement('p');
     genre.textContent = `Genre: ${book.subjects[0] || 'Unknown'}`;
     card.appendChild(genre);

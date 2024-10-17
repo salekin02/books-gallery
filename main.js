@@ -5,21 +5,39 @@ const genreFilter = document.getElementById('genre-filter');
 const prevPageButton = document.getElementById('prev-page');
 const nextPageButton = document.getElementById('next-page');
 const loadingIndicator = document.getElementById('loader');
-const baseUrl = 'books.json';
+let baseUrl = 'https://gutendex.com/books/';
 let booksData = []; // Store fetched book data
 let currentPage = 1;
 const booksPerPage = 10;
 let paginationData = {};
+
+
+
+// load search term from local storage
+const searchTerm = localStorage.getItem('searchTerm');
+if(searchTerm) {
+    searchBar.value = searchTerm;
+    baseUrl = `${baseUrl}?search=${searchTerm}`;
+}
+
+// load selected genre from local storage
+const selectedGenre = localStorage.getItem('selectedGenre');
+if(selectedGenre) {
+    baseUrl = baseUrl + (searchTerm ? '&' : '?') + `topic=${selectedGenre}`;
+}
+
 
 // Fetch initial book data
 fetchBooks();
 
 // Function to fetch books from the API
 async function fetchBooks(url = baseUrl) {
-    loadingIndicator.style.display = 'block'; // Show loading animation
-    bookList.innerHTML = ''; // Clear previous results
+    loadingIndicator.style.display = 'block'; 
+    bookList.innerHTML = ''; 
     prevPageButton.disabled = true;
     nextPageButton.disabled = true;
+    searchBar.disabled = true;
+    genreFilter.disabled = true;
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -33,7 +51,9 @@ async function fetchBooks(url = baseUrl) {
         console.error('Error fetching books:', error);
         bookList.innerHTML = '<p>Error loading books.</p>';
     } finally {
-        loadingIndicator.style.display = 'none'; // Hide loading animation
+        loadingIndicator.style.display = 'none';
+        searchBar.disabled = false;
+        genreFilter.disabled = false;
     }
 }
 
@@ -41,6 +61,11 @@ async function fetchBooks(url = baseUrl) {
 function renderBooks() {
     const booksToRender = booksData
     bookList.innerHTML = '';
+
+    if(booksToRender.length === 0) {
+        bookList.innerHTML = '<p>No books found.</p>';
+        return;
+    }
 
     booksToRender.forEach(book => {
         const bookCard = createBookCard(book);
@@ -60,7 +85,7 @@ function createBookCard(book) {
 
     const div = document.createElement('div');
     const title = document.createElement('a'); // Make title a link
-    title.href = `book-details.html?id=${book.id}`; 
+    title.href = `book-details.html?id=${book.id}`;
     title.textContent = book.title;
     div.appendChild(title);
     card.appendChild(div);
@@ -93,7 +118,7 @@ function createBookCard(book) {
     wishlistIcon.addEventListener('click', toggleWishlist);
     card.appendChild(wishlistIcon);
 
-    
+
 
     return card;
 }
@@ -121,30 +146,31 @@ nextPageButton.addEventListener('click', () => {
 });
 
 // Search functionality
+let timerId;
 searchBar.addEventListener('input', () => {
-    const searchTerm = searchBar.value.toLowerCase();
-    const filteredBooks = booksData.filter(book => {
-        return book.title.toLowerCase().includes(searchTerm);
-    });
-    currentPage = 1; // Reset to first page when searching
-    booksData = filteredBooks; // Update the booksData with the filtered results
-    renderBooks();
-    updatePagination({ count: filteredBooks.length }); // Update pagination
+    if (timerId) {
+        clearTimeout(timerId);
+    }
+    timerId = setTimeout(() => {
+        const searchTerm = searchBar.value.toLowerCase();
+        const url = `${baseUrl}?search=${searchTerm}`;
+        fetchBooks(searchTerm ? url : baseUrl);
+
+        /** save to local storage */
+        localStorage.setItem('searchTerm', searchTerm);
+    }, 500);
 });
+
+
 
 // Genre filter functionality
 genreFilter.addEventListener('change', () => {
     const selectedGenre = genreFilter.value;
     if (selectedGenre) {
-        const filteredBooks = booksData.filter(book => {
-            return book.subjects.some(subject => subject.toLowerCase().includes(selectedGenre));
-        });
-        currentPage = 1; // Reset to first page when filtering
-        booksData = filteredBooks; // Update the booksData with the filtered results
-        renderBooks();
-        updatePagination({ count: filteredBooks.length }); // Update pagination
-    } else {
-        fetchBooks(); // Fetch all books if "All Genres" is selected
+        const url = `${baseUrl}?topic=${selectedGenre}`;
+        fetchBooks(url);
+        /** save to local storage */
+        localStorage.setItem('selectedGenre', selectedGenre);
     }
 });
 
@@ -185,6 +211,9 @@ function extractGenres(books) {
         const option = document.createElement('option');
         option.value = genre;
         option.textContent = genre;
+        if(selectedGenre === genre) {
+            option.selected = true;
+        }
         genreFilter.appendChild(option);
     });
 }
